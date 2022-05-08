@@ -1,6 +1,7 @@
 <?php
 session_start();
-unset($_SESSION['username']); // unset session variable
+unset($_SESSION['email']);
+ // unset session variable
 session_destroy(); // destroy session
 header("location:index.php");
 exit;

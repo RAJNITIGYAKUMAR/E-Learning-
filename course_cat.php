@@ -1,4 +1,6 @@
-
+<?php
+session_start();
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -37,10 +39,10 @@ include("navbar.php"); ?>
                        <?php
                     $id=$_GET['cat_id'];
                     include("db.php");
-                      $get_course=$con->prepare("select * from categories where cat_id=$id ");
-                      $get_course->setFetchMode(PDO::FETCH_ASSOC);
-                      $get_course->execute();
-                      $row=$get_course->fetch();
+                      $get_cat="select * from categories where cat_id=$id ";
+                    
+                      $result=mysqli_query($con,$get_cat);
+                      $row=mysqli_fetch_assoc($result);
                       echo "<h2>".$row['cat_name']."  Courses</h2>";
                       ?>
               
@@ -48,11 +50,12 @@ include("navbar.php"); ?>
                    <?php
                     $id=$_GET['cat_id'];
                     include("db.php");
-                      $get_course=$con->prepare("select * from course where cat_id=$id ");
-                      $get_course->setFetchMode(PDO::FETCH_ASSOC);
-                      $get_course->execute();
+                      $get_course="select * from course where cat_id=$id ";
+                    
+                      $result=mysqli_query($con,$get_course);
+                   
                       
-                      while ($row=$get_course->fetch()): {                
+                      while ($row=mysqli_fetch_assoc($result)){                
                       echo"
                       <div class='card' style='width: 18rem;'>
                           <img src='image/".$row['course_icon']."' class='card-img-top' style='height: 12rem; alt='..'>  
@@ -62,7 +65,7 @@ include("navbar.php"); ?>
                            </div>
                        </div>";
                          }  
-                       endwhile;    
+                         
                     ?>                     
             </div>
    </div>
@@ -73,7 +76,7 @@ include("navbar.php"); ?>
 
 <div class=" text-center" >
   <h4 id="copyright" >
-  copyright@2020 SuccessCurve</h4>
+  copyright@2022 EasyLearning</h4>
   
 </div>
 

@@ -2,7 +2,7 @@
 session_start();
 include('../db.php');
 // Validating Session
-if(strlen($_SESSION['username'])==0)
+if(!isset($_SESSION['username']))
 {
 header('location:../index.php');
 }

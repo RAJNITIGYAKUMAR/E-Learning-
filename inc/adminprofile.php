@@ -2,7 +2,7 @@
 session_start();
 include('../db.php');
 // Validating Session
-if(strlen($_SESSION['username'])==0)
+if(! isset($_SESSION['email']))
 {
 header('location:../index.php');
 }
@@ -10,11 +10,10 @@ else{
 ?>
 <?php
 
-$username=$_SESSION['username'];
-$check=$con->prepare("select * from admin where name='$username'");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $row=$check->Fetch();
+$username=$_SESSION['email'];
+$check="select * from admin where name='$username'";
+   $res=mysqli_query($con,$check);
+$row=mysqli_fetch_assoc($res);
     
 ?> 
 

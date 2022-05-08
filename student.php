@@ -2,7 +2,7 @@
 session_start();
 include('db.php');
 // Validating Session
-if(isset($_SESSION['student_dash'])==0 )
+if(!isset($_SESSION['username']))
 {
 header('location:index.php');
 }
@@ -11,10 +11,10 @@ else{
 
 <?php 
 $username=$_SESSION['username'];
-$check=$con->prepare("select * from student where name='$username'");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $row=$check->Fetch();
+$check="select * from student where name='$username'";
+  $res=mysqli_query($con,$check);
+   
+    $row=mysqli_fetch_assoc($res);
     $id=$row['student_id'];
     
 ?>   
@@ -61,10 +61,9 @@ $check=$con->prepare("select * from student where name='$username'");
     </div>
     <div class="container d-flex justify-content-start flex-wrap">
      <?php
-        $get_course=$con->prepare("select * from course where student_id=$id ");
-        $get_course->setFetchMode(PDO::FETCH_ASSOC);
-        $get_course->execute();      
-        while ($row=$get_course->fetch()): {                
+        $get_course="select * from course where student_id=$id ";
+        $res=mysqli_query($con,$get_course);      
+        while ($row=mysqli_fetch_assoc($res)){                
         echo"
         <div class='card' style='width: 18rem;'>
             <img src='image/".$row['course_icon']."' class='card-img-top' style='height: 12rem; alt='..'>  
@@ -73,8 +72,7 @@ $check=$con->prepare("select * from student where name='$username'");
              <a href='course.php?courseid=".$row['course_id']."' class='btn btn-primary'>Start Learning</a> 
              </div>
          </div>";
-           }  
-         endwhile;    
+           }      
     ?>     
     </div>
 

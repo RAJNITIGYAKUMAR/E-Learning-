@@ -2,7 +2,7 @@
 session_start();
 include('../db.php');
 // Validating Session
-if(strlen($_SESSION['username'])==0)
+if(!isset($_SESSION['email']))
 {
 header('location:../index.php');
 }
@@ -10,12 +10,11 @@ else{
 ?>
 <?php
 
-$username=$_SESSION['username'];
-$check=$con->prepare("select * from admin where name='$username'");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $row=$check->Fetch();
-    
+$username=$_SESSION['email'];
+
+    $check="select * from admin where name='$username'";
+   $res=mysqli_query($con,$check);
+   $row=mysqli_fetch_assoc($res);
 ?> 
 
 
@@ -75,7 +74,7 @@ $check=$con->prepare("select * from admin where name='$username'");
       <div class="rightside">
      <div >
   		<h3>Course Details</h3>
-  		<button  onclick="cat_form()" >Add Course</button>
+  		<button class="btn" onclick="cat_form()" >Add Course</button>
   	</div>
   	<div >
      	<form id="cat_form" method="post" action="" enctype="multipart/form-data">
@@ -86,16 +85,15 @@ $check=$con->prepare("select * from admin where name='$username'");
         <select  id="class_selector" name="class_name"  required="">
           <option value="" >select class</option>
           <?php 
-                include("../db.php");
+              
                 $output='';
-                $get_cat=$con->prepare("select * from class");
-                $get_cat->setFetchMode(PDO:: FETCH_ASSOC);
-                $get_cat->execute();
+                $get_cat="select * from class";
+                $res=mysqli_query($con,$get_cat);
                 
-                while($row=$get_cat->Fetch()):
+                while($row=mysqli_fetch_assoc($res)){ 
                    echo "<option value='".$row['class_id']."'>".$row['class_name']."</option>";
                   
-                endwhile;
+                }
 
            ?>
         </select>
@@ -125,7 +123,7 @@ $check=$con->prepare("select * from admin where name='$username'");
           <input type="text" class="form-control" name="course_fee"  required="">
         </div>                
 			  <center><button type="submit" class="btn btn-primary" name="add_course">Add Course</button></center>
-		</form>
+		  </form>
   	</div>
   	<div>
   		<table cellspacing="0" class="table table-responsive">
@@ -142,13 +140,12 @@ $check=$con->prepare("select * from admin where name='$username'");
 			<th scope="col">Action</th>
 			
 		</tr>
-    <?php
-    include("../db.php");
-   $get_cat=$con->prepare("select * from course inner join class on class.class_id=course.class_id");
-  $get_cat->setFetchMode(PDO:: FETCH_ASSOC);
-  $get_cat->execute();
+  <?php
+   
+  $get_cat="select * from course inner join class on class.class_id=course.class_id";
+  $result=mysqli_query($con,$get_cat);
   $i=1;
-  while($row=$get_cat->Fetch()):
+  while($row=mysqli_fetch_assoc($result)){ 
     echo"<tr>
             <td>".$i++."</td>
                   <td>".$row['course_id']."</td>
@@ -168,12 +165,12 @@ $check=$con->prepare("select * from admin where name='$username'");
            
 
        </tr>";
-  endwhile;
+  }
 
    if(isset($_GET['del_course'])){
     $id=$_GET['del_course'];
-    $del=$con->prepare("delete  from course where course_id='$id'");
-    if($del->execute()){
+    $del="delete  from course where course_id='$id'";
+    if(mysqli_query($con,$del)){
       echo "<script>alert('courses delete successfully')</script>";
       echo "<script>window.open('course.php','_self')</script>";
     }else{
@@ -190,7 +187,6 @@ $check=$con->prepare("select * from admin where name='$username'");
   </div>
 
 <?php
-include("../db.php");
   if(isset($_POST['add_course'])){
     $name=$_POST['class_name'];
 
@@ -229,10 +225,10 @@ include("../db.php");
          print_r($errors);
       }
    }
-    $check=$con->prepare("select * from course where course_name='$course_name' and class_id='$name' ");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $count=$check->rowCount();
+    $check="select * from course where course_name='$course_name' and class_id='$name' ";
+    $res=mysqli_query($con,$check);
+  
+    $count=mysqli_num_rows($res);
   
     if($count==1)
     {
@@ -240,13 +236,13 @@ include("../db.php");
        echo"<script>window.open('course.php','_self')</script>";
     }
     else{
-      $add_course=$con->prepare("insert into course
+      $add_course="insert into course
         ( 
         class_id,course_name,course_icon,course_desc,course_level,course_ins,course_fee)
         values
-        ( '$name', '$course_name','$file_name','$course_desc','$course_level','$course_ins','$course_price')");
+        ( '$name', '$course_name','$file_name','$course_desc','$course_level','$course_ins','$course_price')";
       
-    if($add_course->execute())
+    if(mysqli_query($con,$add_course))
     {
       echo"<script>alert('courses added successfully')</script>";
       echo"<script>window.open('course.php','_self')</script>";

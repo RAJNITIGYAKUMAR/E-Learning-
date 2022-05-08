@@ -1,4 +1,6 @@
-
+<?php
+session_start();
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -31,30 +33,33 @@
       padding: 20px;
      }
      .card{
-      margin: 20px;
+      
+      width:300px;
+      margin-left:10px;
+      
      }
     </style>
   </head>
   <body >
 <?php
 include("navbar.php"); ?>
+<h4 class="heading text-center ">Explore courses</h4>
   <div class="" id="explore_course" >
-        <h2>Explore courses</h2>
-            <div class="container-fluid d-flex justify-content-start flex-wrap">   
+        
+            <div class="container-fluid d-flex justify-content-center flex-wrap">   
                    <?php
 
                     include("db.php");
-                      $get_course=$con->prepare("select * from course");
-                      $get_course->setFetchMode(PDO::FETCH_ASSOC);
-                      $get_course->execute();
+                      $get_course="select * from course";
+                      $result=mysqli_query($con,$get_course);
                       
-                      while ($row=$get_course->fetch()): {                
+                      while ($row=mysqli_fetch_assoc($result)): {                
                       echo"
-                      <div class='card' style='width: 18rem;'>
+                      <div class='card' >
                           <img src='image/".$row['course_icon']."' class='card-img-top' style='height: 12rem; alt='..'>  
                            <div class='card-body'>
                            <h5 class='card-title'>".$row['course_name']."</h5>
-                           <a href='course.php?courseid=".$row['course_id']."' class='btn btn-primary'>Enroll Now</a> 
+                           <a href='course.php?courseid=".$row['course_id']."' class='btn enroll'>Enroll Now</a> 
                            </div>
                        </div>";
                            }
@@ -65,7 +70,7 @@ include("navbar.php"); ?>
 
 <div class=" text-center" >
   <h4 id="copyright" >
-  copyright@2020 SuccessCurve</h4>
+  copyright@2022 EasyLearning</h4>
   
 </div>
 

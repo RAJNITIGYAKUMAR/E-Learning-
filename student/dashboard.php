@@ -1,10 +1,9 @@
 
-
 <?php
 session_start();
 include('../db.php');
 // Validating Session
-if(strlen($_SESSION['username'])==0)
+if(!isset($_SESSION['username']))
 {
 header('location:index.php');
 }
@@ -13,10 +12,9 @@ else{
 
 <?php 
 $username=$_SESSION['username'];
-$check=$con->prepare("select * from student where name='$username'");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $row=$check->Fetch(); 
+$check="select * from student where name='$username'";
+$result=mysqli_query($con,$check);
+$row=mysqli_fetch_assoc($result); 
     
 ?>   
 
@@ -37,10 +35,12 @@ $check=$con->prepare("select * from student where name='$username'");
         margin: 0px;
         padding: 0px;
         box-sizing: border-box;
+         font-family: sans-serif;
       }
       .header{
-        color:#092906;
-        background:#9fdb9a;
+        color:white;
+        background:#4D1933;
+         font-family: sans-serif;
       }
       .welcome{
         display: flex;
@@ -51,34 +51,37 @@ $check=$con->prepare("select * from student where name='$username'");
         font-weight: bold;
         margin:5px 10px;
         text-decoration: none;
-        color: #092906;
+        color:white;
+         font-family: sans-serif;
       }
   .sidebar{
-        width:20%;
-      background: #033c4a;
+      width:20%;
+      background: #4D1933;
       padding: 5px;
       height:100vh;
+      color: white;
       
      
     }
         .sidebar ul li{
-      list-style: none;
-      padding:4px 0px;
+        list-style: none;
+        padding:4px 0px;
        margin-bottom:3px;
        text-align: center;
-       border:2px solid green; 
+        
 
      }
     .sidebar ul li a{
-      
+      border: 2px solid whitesmoke;
       text-decoration: none;
       outline:none;
       display: block;
-
+      color: white;
+      font-family: sans-serif;
 
     }    
     .rightside{
-      border:2px solid blue;
+      
       width:100%;
     }
     </style>
@@ -93,7 +96,7 @@ $check=$con->prepare("select * from student where name='$username'");
           </div>
           <div class="logoutChangepswd"> 
             <a href="#">Change Password</a>
-            <a href="student_logout.php">Logout</a>
+            <a href="../student_logout.php">Logout</a>
            </div>        
       </div>
     </div>
@@ -103,7 +106,10 @@ $check=$con->prepare("select * from student where name='$username'");
                           <div class="sidebar">
                             <ul>
                               <li>
-                                <a href="student/dashboard.php">Dashboard</a>
+                                <a href="../index.php">Home</a>
+                              </li>
+                              <li>
+                                <a href="dashboard.php">Dashboard</a>
                               </li>
                              <li>
                               <a href="#">Profile</a>
@@ -121,12 +127,18 @@ $check=$con->prepare("select * from student where name='$username'");
 
                             </ul>
                           </div>
-                        <div class="rightside">
-                           <div>
-                                <div class="card text-white bg-success mb-3" style="max-width: 18rem;">
-                                  <div class="card-header">certificate</div>
+                        <div class="rightside ">
+                           <div class="d-flex ml-auto">
+                                <div class="card  mb-3" style="width:18rem;">
+                                  <div class="card-header">Course One</div>
                                   <div class="card-body">
-                                    <h5 class="card-title">10</h5>
+                                    <h5 class="card-title"><a href="#">Read</a></h5>
+                                  </div>
+                                </div> 
+                                <div class="card  mb-3" style="width: 18rem;">
+                                  <div class="card-header">Course Two</div>
+                                  <div class="card-body">
+                                    <h5 class="card-title"><a href="#">Read</a></h5>
                                   </div>
                                 </div>                            
                           </div>

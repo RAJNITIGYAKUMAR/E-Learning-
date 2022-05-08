@@ -2,7 +2,7 @@
 session_start();
 include('../db.php');
 // Validating Session
-if(strlen($_SESSION['username'])==0)
+if(!isset($_SESSION['email']))
 {
 header('location:../index.php');
 }
@@ -10,11 +10,10 @@ else{
 ?>
 <?php
 
-$username=$_SESSION['username'];
-$check=$con->prepare("select * from admin where name='$username'");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $row=$check->Fetch();
+$username=$_SESSION['email'];
+$check="select * from admin where name='$username'";
+   $res=mysqli_query($con,$check);
+$row=mysqli_fetch_assoc($res);
     
 ?> 
 
@@ -70,7 +69,7 @@ $check=$con->prepare("select * from admin where name='$username'");
       <div class="rightside">
               <div >
   		<h3>Class Detais</h3>
-  		<button  onclick="cat_form()" >Add Class</button>
+  		<button  class="btn" onclick="cat_form()" >Add Class</button>
   	</div>
   	<div >
      	<form id="cat_form" method="post" action="" enctype="multipart/form-data">   
@@ -102,12 +101,12 @@ $check=$con->prepare("select * from admin where name='$username'");
 		</tr>
 
     <?php
-  include("../db.php");
-   $get_cat=$con->prepare("select * from class");
-  $get_cat->setFetchMode(PDO:: FETCH_ASSOC);
-  $get_cat->execute();
-  $i=1;
-  while($row=$get_cat->Fetch()):
+ 
+ $get_cat="select * from class";
+ $result=mysqli_query($con,$get_cat);
+
+$i=1;
+while($row=mysqli_fetch_assoc($result)){ 
     echo"<tr>
             <td>".$i++."</td>
                   
@@ -123,12 +122,12 @@ $check=$con->prepare("select * from admin where name='$username'");
            
 
        </tr>";
-  endwhile;
+}
 
    if(isset($_GET['del_class'])){
     $id=$_GET['del_class'];
-    $del=$con->prepare("delete  from class where class_id='$id'");
-    if($del->execute()){
+    $del="delete  from class where class_id='$id'";
+    if(mysqli_query($con,$del)){
       echo "<script>alert('class delete successfully')</script>";
       echo "<script>window.open('class.php','_self')</script>";
     }else{
@@ -146,7 +145,7 @@ $check=$con->prepare("select * from admin where name='$username'");
   </div>
 
 <?php 
-include("../db.php");
+
   if(isset($_POST['add_class'])){
     $class_name=$_POST['class_name']; 
     $class_desc=$_POST['class_desc'];       
@@ -180,10 +179,9 @@ include("../db.php");
          print_r($errors);
       }
    }
-    $check=$con->prepare("select * from class where class_name='$class_name'");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $count=$check->rowCount();
+    $check="select * from class where class_name='$class_name'";
+    $res=mysqli_query($con,$check);
+    $count=mysqli_num_rows($res);
 
     if($count==1)
     {
@@ -191,8 +189,8 @@ include("../db.php");
        echo"<script>window.open('class.php','_self')</script>";
     }
     else{
-      $add_class=$con->prepare("insert into class(class_name,class_icon,class_desc)values('$class_name','$file_name','$class_desc')");
-    if($add_class->execute())
+      $add_class="insert into class(class_name,class_icon,class_desc)values('$class_name','$file_name','$class_desc')";
+    if(mysqli_query($con,$add_class))
     {
       echo"<script>alert('class added successfully')</script>";
       echo"<script>window.open('class.php','_self')</script>";
@@ -209,6 +207,12 @@ include("../db.php");
 
 
 ?>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
   <script type="text/javascript">
 
   	    
@@ -220,12 +224,8 @@ include("../db.php");
         else
         x.style.display="none";
     }
-</script>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </script> 
+  
   </body>
 </html>
 <?php }?>

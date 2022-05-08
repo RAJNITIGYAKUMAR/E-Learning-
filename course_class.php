@@ -1,4 +1,6 @@
-
+<?php
+session_start();
+?>
 <!doctype html>
 <html lang="en">
   <head>
@@ -27,6 +29,10 @@
         
         
       }
+      .card{
+        margin-left:10px;
+        width:300px;
+      }
     </style>
   </head>
   <body >
@@ -37,32 +43,30 @@ include("navbar.php"); ?>
                        <?php
                     $id=$_GET['classid'];
                     include("db.php");
-                      $get_course=$con->prepare("select * from class where class_id=$id ");
-                      $get_course->setFetchMode(PDO::FETCH_ASSOC);
-                      $get_course->execute();
-                      $row=$get_course->fetch();
-                      echo "<h2>".$row['class_name']." Courses</h2>";
+                      $get_class="select * from class where class_id=$id ";
+                      $result=mysqli_query($con,$get_class);
+                      $row=mysqli_fetch_assoc($result);
+                      echo "<h4 class='heading'>".$row['class_name']." Courses</h4>";
                       ?>
               
-            <div class="d-flex justify-content-around flex-wrap">   
+            <div class="d-flex justify-content-center flex-wrap">   
                    <?php
                     $id=$_GET['classid'];
                     include("db.php");
-                      $get_course=$con->prepare("select * from course where class_id=$id ");
-                      $get_course->setFetchMode(PDO::FETCH_ASSOC);
-                      $get_course->execute();
+                      $get_course="select * from course where class_id=$id ";
+                      $result=mysqli_query($con,$get_course);
                       
-                      while ($row=$get_course->fetch()): {                
+                      while ($row=mysqli_fetch_assoc($result)) {                
                       echo"
-                      <div class='card' style='width: 18rem;'>
+                      <div class='card' >
                           <img src='image/".$row['course_icon']."' class='card-img-top' style='height: 12rem; alt='..'>  
                            <div class='card-body'>
                            <h5 class='card-title'>".$row['course_name']."</h5>
-                           <a href='course.php?courseid=".$row['course_id']."' class='btn btn-primary'>Enroll Now</a> 
+                           <a href='course.php?courseid=".$row['course_id']."' class='btn enroll'>Enroll Now</a> 
                            </div>
                        </div>";
                          }  
-                       endwhile;    
+                          
                     ?>                     
             </div>
    </div>
@@ -73,7 +77,7 @@ include("navbar.php"); ?>
 
 <div class=" text-center" >
   <h4 id="copyright" >
-  copyright@2020 SuccessCurve</h4>
+  copyright@2022 EasyLearning</h4>
   
 </div>
 

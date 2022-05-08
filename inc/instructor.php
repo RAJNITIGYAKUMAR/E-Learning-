@@ -2,19 +2,14 @@
 session_start();
 include('../db.php');
 // Validating Session
-if(strlen($_SESSION['username'])==0)
+if(!isset($_SESSION['email']))
 {
 header('location:../index.php');
 }
 else{
-?>
-<?php
 
-$username=$_SESSION['username'];
-$check=$con->prepare("select * from admin where name='$username'");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $row=$check->Fetch();
+$username=$_SESSION['email'];
+
     
 ?> 
 
@@ -112,12 +107,12 @@ $check=$con->prepare("select * from admin where name='$username'");
 			
 		</tr>
 <?php
-  include("../db.php");
-   $get_cat=$con->prepare("select * from instructor");
-  $get_cat->setFetchMode(PDO:: FETCH_ASSOC);
-  $get_cat->execute();
+
+  $get_cat="select * from instructor";
+  $res=mysqli_query($con,$get_cat);
+ 
   $i=1;
-  while($row=$get_cat->Fetch()):
+  while($row=mysqli_fetch_assoc($res))
     echo"<tr>
             <td>".$i++."</td>
                   
@@ -135,12 +130,12 @@ $check=$con->prepare("select * from admin where name='$username'");
            
 
        </tr>";
-  endwhile;
+  }
 
    if(isset($_GET['del_class'])){
     $id=$_GET['del_class'];
-    $del=$con->prepare("delete  from instructor where ins_id='$id'");
-    if($del->execute()){
+    $del="delete  from instructor where ins_id='$id'";
+    if(mysqli_query($con,$del)){
       echo "<script>alert('instructor delete successfully')</script>";
       echo "<script>window.open('instructor.php','_self')</script>";
     }else{
@@ -194,10 +189,10 @@ include("../db.php");
          print_r($errors);
       }
    }
-    $check=$con->prepare("select * from instructor where email='$email'");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $count=$check->rowCount();
+    $check="select * from instructor where email='$email'";
+   
+    $res=mysqli_query($con,$check);
+    $count=mysqli_num_rows($res);
 
     if($count==1)
     {
@@ -205,9 +200,9 @@ include("../db.php");
        echo"<script>window.open('instructor.php','_self')</script>";
     }
     else{
-      $add_class=$con->prepare("insert into instructor(name,ins_img,email,password,mobile)values('$name','$file_name','$email','$password',
-        '$mobile')");
-    if($add_class->execute())
+      $add_class="insert into instructor(name,ins_img,email,password,mobile)values('$name','$file_name','$email','$password',
+        '$mobile')";
+    if(mysqli_query($con,$add_class))
     {
       echo"<script>alert('Instructor added successfully')</script>";
       echo"<script>window.open('instructor.php','_self')</script>";
@@ -216,7 +211,7 @@ include("../db.php");
       echo"<script>window.open('instructor.php','_self')</script>";
     }
 
-    }
+    
     
   }
 

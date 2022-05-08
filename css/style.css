@@ -25,10 +25,21 @@
     text-align: center;
     padding: 10px;
 }
+.heading{
+	padding:10px;background:#4d1933; color:white;margin-top:30px; 
+  }
 .categories{
 	width:60%;
 	
 }
+.enroll{
+	background-color:#4d1933 !important;
+	color:white !important;
+  }
+
+  #ragister,#login{
+	  background-color: whitesmoke !important;
+  }
 @media (max-width: 800px) { 
 	.search1{
 		
@@ -67,26 +78,36 @@ form button:focus {
     outline: none;
 }
 form button i{
-	background: yellow;
-	padding: 14px 12px;
+	background: #4d1933;
+	color:wheat;
+	padding: 12px 12px;
 	margin:0px 0px;
+	border:1px solid wheat;
+}
+.textinfo{
+	color:#4d1933 !important;
 }
 
 nav {
-	
-    background: #1a2638;
+    background: #4d1933;
 }
-nav .navbar-brand{
+nav.navbar{
 	
+	position: -webkit-sticky;
+	position: sticky;
+	top: 0;
+	z-index:3;
 }
+
 .navbar-nav{
 	
 	margin:0px auto;
 	
 }
 .nav-link{
-	color:#fcba03;
-	
+	font-family:  'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+	font-size: 16px;
+	text-transform: uppercase;
 }
 .access{
 	
@@ -109,7 +130,7 @@ nav .navbar-brand{
 }
 
 #copyright{
-	background:#135e46;
+	background:#4d1933;
 	padding:10px;
 	color:white;
 }
@@ -118,8 +139,7 @@ nav .navbar-brand{
 
   .course_header
 {
-	
-	background:#327c99;
+	background:#4d1933;
 	margin:0px auto;
 	padding:20px;
 }
@@ -180,13 +200,13 @@ nav .navbar-brand{
     .course_currilum{
     	float: left;
     	width:50%;
-    	background: ;
+    	
        
     }
     .course_instructor{	
     	width:45%;
         float: right;
-        background: ;
+      
         padding: 5px;
         color: #022114;
       
@@ -200,7 +220,7 @@ nav .navbar-brand{
     }
         #section_list{
             list-style: none;
-            border-bottom: 2px solid red;
+            
             margin-bottom: 5px;
 
 

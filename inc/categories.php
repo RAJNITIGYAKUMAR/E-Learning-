@@ -2,7 +2,7 @@
 session_start();
 include('../db.php');
 // Validating Session
-if(strlen($_SESSION['username'])==0)
+if(!isset($_SESSION['email']))
 {
 header('location:../index.php');
 }
@@ -10,11 +10,11 @@ else{
 ?>
 <?php
 
-$username=$_SESSION['username'];
-$check=$con->prepare("select * from admin where name='$username'");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $row=$check->Fetch();
+$username=$_SESSION['email'];
+$check="select * from admin where name='$username'";
+    $res=mysqli_query($con,$check);
+    
+    $row=mysqli_fetch_assoc($res);
     
 ?> 
 
@@ -26,11 +26,11 @@ $check=$con->prepare("select * from admin where name='$username'");
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<link rel="stylesheet" type="text/css" href="../css/admin.css">
+    <link rel="stylesheet" type="text/css" href="../css/admin.css">
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title>Hello, world!</title>
+    <title>Categories</title>
   </head>
   <style type="text/css">
   	h3{
@@ -69,7 +69,7 @@ $check=$con->prepare("select * from admin where name='$username'");
       <div class="rightside">
               <div >
   		<h3>View Categories</h3>
-  		<button  onclick="cat_form()" >Add Cat</button>
+  		<button class="btn" onclick="cat_form()" >Add Cat</button>
   	</div>
   	<div >
      	<form id="cat_form" method="post" action="" enctype="multipart/form-data">
@@ -100,12 +100,12 @@ $check=$con->prepare("select * from admin where name='$username'");
 			
 		</tr>
     <?php 
-      include("../db.php");
-   $get_cat=$con->prepare("select * from categories");
-  $get_cat->setFetchMode(PDO:: FETCH_ASSOC);
-  $get_cat->execute();
+  
+   $get_cat="select * from categories";
+   $result=mysqli_query($con,$get_cat);
+ 
   $i=1;
-  while($row=$get_cat->Fetch()):
+  while($row=mysqli_fetch_assoc($result)){ 
     echo"<tr>
             <td>".$i++."</td>
                   
@@ -121,12 +121,12 @@ $check=$con->prepare("select * from admin where name='$username'");
            
 
        </tr>";
-  endwhile;
+  }
 
    if(isset($_GET['del_cat'])){
     $id=$_GET['del_cat'];
-    $del=$con->prepare("delete  from categories where cat_id='$id'");
-    if($del->execute()){
+    $del="delete  from categories where cat_id='$id'";
+    if(mysqli_query($con,$del)){
       echo "<script>alert('categories delete successfully')</script>";
       echo "<script>window.open('categories.php','_self')</script>";
     }else{
@@ -146,10 +146,10 @@ $check=$con->prepare("select * from admin where name='$username'");
               
   </div>
 <?php
-include("../db.php");
+
 if(isset($_POST['add_cat'])){
     $cat_name=$_POST['cat_name']; 
-        $cat_desc=$_POST['cat_desc'];
+    $cat_desc=$_POST['cat_desc'];
 
 
     if(isset($_FILES['image']))
@@ -180,10 +180,9 @@ if(isset($_POST['add_cat'])){
          print_r($errors);
       }
    }
-    $check=$con->prepare("select * from categories where cat_name='$cat_name'");
-    $check->setFetchMode(PDO:: FETCH_ASSOC);
-    $check->execute();
-    $count=$check->rowCount();
+    $check="select * from categories where cat_name='$cat_name'";
+    $result=mysqli_query($con,$check);
+    $count=mysqli_num_rows($result);
 
     if($count==1)
     {
@@ -191,8 +190,8 @@ if(isset($_POST['add_cat'])){
        echo"<script>window.open('categories.php','_self')</script>";
     }
     else{
-      $add_cat=$con->prepare("insert into categories(cat_name,cat_icon,cat_desc)values('$cat_name','$file_name','$cat_desc')");
-    if($add_cat->execute())
+      $add_cat="insert into categories(cat_name,cat_icon,cat_desc)values('$cat_name','$file_name','$cat_desc')";
+    if(mysqli_query($con,$add_cat))
     {
       echo"<script>alert('categories added successfully')</script>";
       echo"<script>window.open('categories.php','_self')</script>";
@@ -208,7 +207,13 @@ if(isset($_POST['add_cat'])){
 
 ?>
 
-  <script type="text/javascript">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script type="text/javascript">
 
   	    
     function cat_form()
@@ -220,11 +225,6 @@ if(isset($_POST['add_cat'])){
         x.style.display="none";
     }
 </script>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
   </body>
 </html>
 <?php }?>
